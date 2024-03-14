@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naptár</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+
+</head>
+    
+<body>
+    <div id="keret">
+        <div id="bal">
+            <h1 id="Hónap">Hónap</h1>
+            <h2 id="Év">Év</h2>
+            <div id = "gombok">
+            <button onclick="generatecalendar(0)">Január</button>
+            <button onclick="generatecalendar(1)">Február</button>
+            <button onclick="generatecalendar(2)">Március</button>
+            <button onclick="generatecalendar(3)">Április</button>
+            <button onclick="generatecalendar(4)">Május</button>
+            <button onclick="generatecalendar(5)">Június</button>
+            <button onclick="generatecalendar(6)">Július</button>
+            <button onclick="generatecalendar(7)">Augusztus</button>
+            <button onclick="generatecalendar(8)">Szeptember</button>
+            <button onclick="generatecalendar(9)">Október</button>
+            <button onclick="generatecalendar(10)">November</button>
+            <button onclick="generatecalendar(11)">December</button>
+            <br><h2><u>Ünnepek: </u></h2>
+            <h4 id="ünnep1"></h4>
+            <h4 id="ünnep2"></h4>
+            <br><h2 id = aktual>Aktuális dátum:</h2>
+            <h2 id ="datum"></h2>
+        </div>
+        </div>
+        <div id ="jobb">
+            <h3>H  K  SZ CS P SZ V</h3>
+            <div id="tabla"></div>
+        </div>   
+    </div>       
+        <script>
+            // oldal betöltésekor kiolvassa az aktuális dátumot    
+            window.onload = function() 
+            {
+            let actdate = new Date();
+            var actm = actdate.getMonth();
+            var actday = actdate.getDate();
+            document.getElementById("datum").innerText= "2024. "+(actm+1) + ". " + actday;
+            generatecalendar(actm);
+            };
+            function generatecalendar(month,aktualhonap,actm)
+            {
+                let honapok = ["Január", "Ferbuár", "Március", "Április", "Május", "Június", "Július", "Augusztus", "Szeptember", "Október", "November", "December"];
+                let date = new Date(); // böngészőből kiolvasni a dátumot
+                let ev = 2024; // aktuális év kiolvasása 
+                let honap = honapok[month]; // megadott hónap megadása
+                date.setMonth(month); //dátum átállitva a megadott hónapra
+                var firstDay = new Date(2024, month, 1); // megadott hónap első napjára beállitás
+                var napokszama = new Date(2024, month + 1, 0).getDate(); // beállítás a megadott hónapra a napok vizsgálatára
+                var napSorszam = firstDay.getDay()-1; // Milyen napra esik az első nap - számmal -- 0:hétfő, 1:kedd...stb.
+                var mainap = date.getDate(); 
+                var aktualhonap = date.getMonth(); // megadott hónap kiolvasása
+                let actdate = new Date(); // mai dátum
+                var actm = actdate.getMonth(); // aktuális mai hónap
+
+               // Baloldali infókhoz kinyerni a dátumot
+                function daysInMonth(month) 
+                {
+                return new Date(2024, month + 1, 0).getDate();
+                }
+                napszam = daysInMonth(ev,month);
+    
+                document.getElementById("Hónap").innerText = honap;
+                document.getElementById("Év").innerText = ev;
+                naptar(month, napokszama, napSorszam,mainap,aktualhonap,actm);
+            }    
+            
+            //NAPTÁR GENERÁLÁS
+
+            function naptar(month, napokszama, napSorszam, mainap, aktualhonap, actm) {
+            var firstDay = new Date(2024, month, 1).getDay(); // Az aktuális hónap első napjának megállapítása (0: vasárnap, 1: hétfő, ..., 6: szombat)
+            napSorszam = firstDay === 0 ? 6 : firstDay - 1; // Az első nap sorszáma, a hét napjait 0-tól (hétfő) számozzuk
+
+            var numRows = Math.ceil((napokszama + napSorszam) / 7);
+            var table = document.createElement("table"); // Tábla létrehozása
+
+            var currentDay = 1;
+
+                    // Sorok és cellák létrehozása
+             for (var i = 0; i < numRows; i++) 
+             {
+            var row = table.insertRow(); // sor
+        
+            // Hétfőtől a hét utolsó napjáig
+                for (var j = 0; j < 7; j++) 
+                {
+                     if (i === 0 && j < napSorszam) 
+                     {
+                         // Üres cella az első sorban, a megfelelő helyen
+                        var cell = row.insertCell(); // cella
+                        cell.textContent = "";
+                    } 
+                    else 
+                    {
+                        // Ha még nem értünk a hónap végére, akkor kitöltjük a cellát a megfelelő nappal
+                        if (currentDay <= napokszama)
+                        {
+                        var cell = row.insertCell();
+                        cell.id = currentDay;
+                        cell.textContent = currentDay++;
+                        } 
+                else 
+                {
+                    // Ha elfogytak a hónap napjai, kilépünk a ciklusból
+                    break;
+                }
+            }
+        }
+    }
+
+    // Előző tábla törlése
+    document.getElementById("tabla").innerHTML = "";
+    // Új tábla hozzáadása
+    document.getElementById("tabla").appendChild(table);
+
+                // ünnepnapok megjelölése
+                switch(month)
+                { 
+                case 11: // decemberi ünnepek
+                     
+                    var cella= document.getElementById("25");
+                    cella.style.backgroundColor = "orange"
+                    document.getElementById("ünnep1").innerText ="25 - Karácsony";
+                    var cella= document.getElementById("26");
+                    cella.style.backgroundColor = "orange"
+                    document.getElementById("ünnep2").innerText ="26 - Karácsony másnapja";
+                    break;
+                
+                case 10: // novemberi ünnepek
+                
+                    var cella= document.getElementById("1");
+                    cella.style.backgroundColor = "orange"
+                    document.getElementById("ünnep1").innerText ="1 - Mindenszentek";
+                    document.getElementById("ünnep2").innerText ="\u200B";
+                    break;
+                
+                case 9: // októberi ünnepek
+                
+                    var cella= document.getElementById("23");
+                    cella.style.backgroundColor = "orange"
+                    document.getElementById("ünnep1").innerText ="23 - Szabadságharc";
+                    document.getElementById("ünnep2").innerText ="\u200B";
+                    break;
+                
+                case 7: // augusztusi ünnepek
+                
+                    var cella= document.getElementById("20");
+                    cella.style.backgroundColor = "orange"
+                    document.getElementById("ünnep1").innerText ="20 - Államalapítás ünnepe";
+                    document.getElementById("ünnep2").innerText ="\u200B";
+                    break;
+                
+                case 4: // májusi ünnepek
+                
+                    var cella= document.getElementById("1");
+                    cella.style.backgroundColor = "orange"
+                    document.getElementById("ünnep1").innerText ="1 - Munka ünnepe";
+                    var cella= document.getElementById("20");
+                    document.getElementById("ünnep2").innerText ="20 - Pünkösd";
+                    cella.style.backgroundColor = "orange"
+                    break;
+                
+                case 3:  // aprilisi ünnepek
+                
+                 var cella= document.getElementById("1");
+                    cella.style.backgroundColor = "orange"
+                    document.getElementById("ünnep1").innerText ="1 - Húsvét hétfő";
+                    var cella= document.getElementById("20");
+                    document.getElementById("ünnep2").innerText ="\u200B";
+                    break;
+                 
+                
+                case 2: // márciusi ünnepek
+                
+                    var cella= document.getElementById("15");
+                    cella.style.backgroundColor = "orange"
+                    document.getElementById("ünnep1").innerText ="15 - Szabadságharc";
+                    var cella= document.getElementById("29");
+                    document.getElementById("ünnep2").innerText ="29 - Nagypéntek";
+                    cella.style.backgroundColor = "orange"
+                    break;
+                
+                case 0:  // januári ünnepek
+                
+                    var cella= document.getElementById("1");
+                    cella.style.backgroundColor = "orange"
+                    document.getElementById("ünnep1").innerText ="1 - Újév";
+                    document.getElementById("ünnep2").innerText = "\u200B";
+                    break;
+                
+                default:
+                    document.getElementById("ünnep1").innerText ="Nincs";
+                    document.getElementById("ünnep2").innerText ="\u200B";
+                    break;
+                }
+
+                if(month==actm) // aktuális nap kijelölése
+                {
+                    var cella= document.getElementById(mainap);
+                    cella.style.backgroundColor = "red"
+                   
+                }
+
+                else
+                {
+                    var cella= document.getElementById(mainap);
+                    cella.style.backgroundColor = ""
+                 
+                }
+                
+                /// átfutunk a hónap összes napján, és ha az adott nap péntekre vagy szombatra esik, akkor szinezzük
+                var szamlalo = 0;
+                for (i=0; i < napokszama; i++)
+                {
+                    var weekend = new Date (2024,month,i)
+                    var day = weekend.getDay();
+                    if (day == 5)
+                    {
+                        var cella= document.getElementById(i+1);
+                        cella.style.backgroundColor = "#FF6666";
+                    }
+                    if (day == 6)
+                    {
+                        var cella= document.getElementById(i+1);
+                        cella.style.backgroundColor = "#FF6666";
+                    }
+                }
+            }
+
+        </script>
+</body>
+</html>
